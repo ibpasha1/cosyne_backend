@@ -65,6 +65,44 @@ if(isset($_POST['login']))
     }
 }
 
+//update_account
+if(isset($_POST['update_account']))
+{
+
+    $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']  : '';
+    $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']  : '';
+    $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']  : '';
+    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']  : '';
+    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']  : '';
+    $city                  = isset($_POST['city'])               ? $_POST['city']  : '';
+    $state                 = isset($_POST['state'])              ? $_POST['state']  : '';
+    $zip                   = isset($_POST['zip'])                ? $_POST['zip']  : '';
+    $gender                = isset($_POST['gender'])             ? $_POST['gender']  : '';
+
+
+$result = $mysqli->query("SELECT * FROM cosyne_users WHERE email='$email'") or die ($mysqli->error);
+if ( $result->num_rows > 0 )
+{
+    echo "exist";
+}
+else {
+
+  $sql = "INSERT INTO cosyne_users (insta_username, verification_code, first_name, last_name ) "
+          . "VALUES ('$insta_username','$verification_code','$first_name', '$last_name')";
+  if ( $mysqli->query($sql) )
+  {
+      echo "success";
+  }
+
+  else {
+      echo "failed";
+   }
+  }
+}
+
+
+
+
 if(isset($_POST['account_request']))
 {
 
@@ -72,7 +110,7 @@ if(isset($_POST['account_request']))
    $result = $mysqli->query("SELECT * FROM cosyne_users WHERE email='$email'");
    if ($result->num_rows == 0)
    {
-       echo "err";
+      echo "err";
    } else {
      $JSON_OUTPUT = '{
 
