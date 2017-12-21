@@ -5,6 +5,8 @@ app general php backend functions - server side
 signup - login - acccount request
 */
 include 'db.php';
+session_start();
+//$_SESSION['id'];
 header("Access-Control-Allow-Origin: *");
 
 if(isset($_POST['signup']))
@@ -55,10 +57,10 @@ if(isset($_POST['login']))
         {
             $login_key = uniqid();
             $sql = "UPDATE cosyne_users SET login_key='$login_key' WHERE email='$email'";
-
-            $JSON_OUTPUT = '{ "status":"'.$email.'", "email":"'.$email.'"}';
+            $id = $user['id'];
+            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'"}';
             echo $JSON_OUTPUT;
-            //echo $user_token;
+            //echo "success";
         } else {
             echo "that combo isn't right";
         }
@@ -68,7 +70,7 @@ if(isset($_POST['login']))
 //update_account
 if(isset($_POST['update_account']))
 {
-
+    $id                    = isset($_POST['id'])                 ? $_POST['id']     : '';
     $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']  : '';
     $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']  : '';
     $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']  : '';
@@ -80,7 +82,7 @@ if(isset($_POST['update_account']))
     $gender                = isset($_POST['gender'])             ? $_POST['gender']  : '';
 
 
-$result = $mysqli->query("SELECT * FROM cosyne_users WHERE email='$email'") or die ($mysqli->error);
+$result = $mysqli->query("SELECT * FROM cosyne_users WHERE id='$id'") or die ($mysqli->error);
 if ( $result->num_rows > 0 )
 {
     echo "exist";
