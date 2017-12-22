@@ -72,35 +72,22 @@ if(isset($_POST['update_account']))
 {
     $id                    = isset($_POST['id'])                 ? $_POST['id']     : '';
     $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']  : '';
-    $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']  : '';
     $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']  : '';
-    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']  : '';
-    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']  : '';
-    $city                  = isset($_POST['city'])               ? $_POST['city']  : '';
-    $state                 = isset($_POST['state'])              ? $_POST['state']  : '';
-    $zip                   = isset($_POST['zip'])                ? $_POST['zip']  : '';
-    $gender                = isset($_POST['gender'])             ? $_POST['gender']  : '';
-
-
-$result = $mysqli->query("SELECT * FROM cosyne_users WHERE id='$id'") or die ($mysqli->error);
-if ( $result->num_rows > 0 )
-{
-    echo "exist";
+    //$id ='1505194530';
+    //$insta_username = 'ibpasha';
+    //$first_name = 'ibrahim';
+    if ($insta_username == '' || $first_name == '' )
+        {
+          echo "error";
+        } else {
+          $mysqli->query("UPDATE cosyne_users SET id='$id', insta_username='$insta_username',
+          first_name='$first_name'  WHERE id='$id'") or die($mysqli->error);
+        }
 }
-else {
 
-  $sql = "INSERT INTO cosyne_users (insta_username, verification_code, first_name, last_name ) "
-          . "VALUES ('$insta_username','$verification_code','$first_name', '$last_name')";
-  if ( $mysqli->query($sql) )
-  {
-      echo "success";
-  }
 
-  else {
-      echo "failed";
-   }
-  }
-}
+
+
 
 
 
