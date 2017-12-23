@@ -82,9 +82,12 @@ if(isset($_POST['login']))
             $city           = $user['city'];
             $state          = $user['state'];
             $zip            = $user['zip'];
+            $gender         = $user['gender'];
 
 
-            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" }';
+            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" ,
+            "first_name":"'.$firstname.'" , "last_name":"'.$lastname.'" ,  "street_address":"'.$streetaddress.'" ,  "city":"'.$city.'" ,
+            "state":"'.$state.'" , "zip":"'.$zip.'" , "gender":"'.$gender.'"}';
 
 
 
