@@ -3,6 +3,22 @@
 Copyright (c) Cosyne LLC 2017 - 2018 - Author Ibrahim Pasha
 app general php backend functions - server side
 signup - login - acccount request
+
+
+'{
+ "status":          "success",
+ "id:               "'.$id.'",
+ "insta_username:   "'.$insta_username.'",
+ "verification_code:"'.$verification_code.'",
+ "first_name:       "'.$first_name.'",
+ "last_name:        "'.$insta_username.'",
+ "street_address:   "'.$street_address.'",
+ "city:             "'.$city.'",
+ "state:            "'.$state.'",
+ "zip:              "'.$zip.'",
+ "gender:           "'.$gender.'"
+
+}';
 */
 include 'db.php';
 session_start();
@@ -57,8 +73,22 @@ if(isset($_POST['login']))
         {
             $login_key = uniqid();
             $sql = "UPDATE cosyne_users SET login_key='$login_key' WHERE email='$email'";
-            $id = $user['id'];
-            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'"}';
+            $id             = $user['id'];
+            $insta          = $user['insta_username'];
+            $v_code         = $user['verification_code'];
+            $firstname      = $user['first_name'];
+            $lastname       = $user['last_name'];
+            $streetaddress  = $user['street_address'];
+            $city           = $user['city'];
+            $state          = $user['state'];
+            $zip            = $user['zip'];
+
+
+            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" }';
+
+
+
+
             echo $JSON_OUTPUT;
             //echo "success";
         } else {
@@ -72,21 +102,37 @@ if(isset($_POST['update_account']))
 {
     $id                    = isset($_POST['id'])                 ? $_POST['id']     : '';
     $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']  : '';
+    $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']  : '';
     $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']  : '';
-    //$id ='1505194530';
-    //$insta_username = 'ibpasha';
-    //$first_name = 'ibrahim';
+    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']  : '';
+    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']  : '';
+    $city                  = isset($_POST['city'])               ? $_POST['city']  : '';
+    $state                 = isset($_POST['state'])              ? $_POST['state']  : '';
+    $zip                   = isset($_POST['zip'])                ? $_POST['zip']  : '';
+    $gender                = isset($_POST['gender'])             ? $_POST['gender']  : '';
+
     if ($insta_username == '' || $first_name == '' )
         {
           echo "error";
         } else {
-          $mysqli->query("UPDATE cosyne_users SET id='$id', insta_username='$insta_username',
-          first_name='$first_name'  WHERE id='$id'") or die($mysqli->error);
-        }
+          $mysqli->query("UPDATE cosyne_users SET id='$id',  insta_username='$insta_username', verification_code='$verification_code',
+          first_name='$first_name', last_name='$last_name', street_address='$street_address', city='$city', state='$state', zip='$zip',
+          gender='$gender'  WHERE id='$id'") or die($mysqli->error);
+
+          $result = $mysqli->query("SELECT * FROM cosyne_users WHERE id='$id'");
+          if ($result->num_rows == 0)
+          {
+              echo "mismatch";
+          } else {
+            $JSON_OUTPUT = '{ "insta_username":"'.$insta_username.'", "verification_code":"'.$verification_code.'"}';
+            echo $JSON_OUTPUT;
+          }
+
+
+
+
+      }
 }
-
-
-
 
 
 
