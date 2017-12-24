@@ -47,6 +47,16 @@ else {
             . "VALUES ('$new_id','$email','$hash_password', '$hash')";
     if ( $mysqli->query($sql) )
     {
+
+      $JSON_OUTPUT = '{ "message":"almost welcome to coysne. check your email to verify your account "}';
+      $to      = $email;
+      $subject = 'Account Verification (cosyne)';
+      $message_body = '
+      Hello '.$first_name.',
+      Thank you for signing up for cosyne!
+      Please click this link to activate your account:
+      http://cosyne.io/y/cosyneav.php?email='.$email.'&hash='.$hash;
+      mail( $to, $subject, $message_body );
         echo "success";
     }
 
@@ -74,6 +84,7 @@ if(isset($_POST['login']))
             $login_key = uniqid();
             $sql = "UPDATE cosyne_users SET login_key='$login_key' WHERE email='$email'";
             $id             = $user['id'];
+            $active         = $user['active'];
             $insta          = $user['insta_username'];
             $v_code         = $user['verification_code'];
             $firstname      = $user['first_name'];
@@ -85,12 +96,9 @@ if(isset($_POST['login']))
             $gender         = $user['gender'];
 
 
-            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" ,
+            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "active":"'.$active.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" ,
             "first_name":"'.$firstname.'" , "last_name":"'.$lastname.'" ,  "street_address":"'.$streetaddress.'" ,  "city":"'.$city.'" ,
             "state":"'.$state.'" , "zip":"'.$zip.'" , "gender":"'.$gender.'"}';
-
-
-
 
             echo $JSON_OUTPUT;
             //echo "success";
@@ -100,24 +108,37 @@ if(isset($_POST['login']))
     }
 }
 
+//
+
+
+
+
+
+
+
+
+
 //update_account
 if(isset($_POST['update_account']))
 {
-    $id                    = isset($_POST['id'])                 ? $_POST['id']     : '';
-    $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']  : '';
-    $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']  : '';
-    $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']  : '';
-    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']  : '';
-    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']  : '';
-    $city                  = isset($_POST['city'])               ? $_POST['city']  : '';
-    $state                 = isset($_POST['state'])              ? $_POST['state']  : '';
-    $zip                   = isset($_POST['zip'])                ? $_POST['zip']  : '';
-    $gender                = isset($_POST['gender'])             ? $_POST['gender']  : '';
+    $id                    = isset($_POST['id'])                 ? $_POST['id']                  : '';
+    $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']      : '';
+    $verification_code     = isset($_POST['verification_code'])  ? $_POST['verification_code']   : '';
+    $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']          : '';
+    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']           : '';
+    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']      : '';
+    $city                  = isset($_POST['city'])               ? $_POST['city']                : '';
+    $state                 = isset($_POST['state'])              ? $_POST['state']               : '';
+    $zip                   = isset($_POST['zip'])                ? $_POST['zip']                 : '';
+    $gender                = isset($_POST['gender'])             ? $_POST['gender']              : '';
 
     if ($insta_username == '' || $first_name == '' )
         {
           echo "error";
-        } else {
+        }
+
+        else
+        {
           $mysqli->query("UPDATE cosyne_users SET id='$id',  insta_username='$insta_username', verification_code='$verification_code',
           first_name='$first_name', last_name='$last_name', street_address='$street_address', city='$city', state='$state', zip='$zip',
           gender='$gender'  WHERE id='$id'") or die($mysqli->error);
@@ -130,10 +151,6 @@ if(isset($_POST['update_account']))
             $JSON_OUTPUT = '{ "insta_username":"'.$insta_username.'", "verification_code":"'.$verification_code.'"}';
             echo $JSON_OUTPUT;
           }
-
-
-
-
       }
 }
 
