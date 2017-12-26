@@ -27,10 +27,11 @@ header("Access-Control-Allow-Origin: *");
 
 if(isset($_POST['signup']))
 {
-    $id        = isset($_POST['id'])  ? $_POST['id']  : '';
-    $email     = isset($_POST['email'])  ? $_POST['email']  : '';
-    $password  = isset($_POST['password'])  ? $_POST['password']  : '';
-    $hash      = $mysqli->escape_string( md5( rand(0,1000) ) );
+    $id            = isset($_POST['id'])            ? $_POST['id']              : '';
+    $email         = isset($_POST['email'])         ? $_POST['email']           : '';
+    $password      = isset($_POST['password'])      ? $_POST['password']        : '';
+    $account_type  = isset($_POST['account_type'])  ? $_POST['account_type']    : '';
+    $hash          = $mysqli->escape_string( md5( rand(0,1000) ) );
     $hash_password = password_hash($password, PASSWORD_BCRYPT);
 
 
@@ -43,12 +44,11 @@ else {
 
     $new_id = rand();
     $date=date("d-m-y h:i:s");
-    $sql = "INSERT INTO cosyne_users (id, email, password, hash) "
-            . "VALUES ('$new_id','$email','$hash_password', '$hash')";
+    $sql = "INSERT INTO cosyne_users (id, email, password, hash, account_type) "
+            . "VALUES ('$new_id','$email','$hash_password', '$hash', '$account_type')";
     if ( $mysqli->query($sql) )
     {
 
-      $JSON_OUTPUT = '{ "message":"almost welcome to coysne. check your email to verify your account "}';
       $to      = $email;
       $subject = 'Account Verification (cosyne)';
       $message_body = '
@@ -57,7 +57,8 @@ else {
       Please click this link to activate your account:
       http://cosyne.io/y/cosyneav.php?email='.$email.'&hash='.$hash;
       mail( $to, $subject, $message_body );
-        echo "success";
+      $JSON_OUTPUT = '{ "status":"success"}';
+        echo $JSON_OUTPUT;
     }
 
     else {
@@ -85,6 +86,7 @@ if(isset($_POST['login']))
             $sql = "UPDATE cosyne_users SET login_key='$login_key' WHERE email='$email'";
             $id             = $user['id'];
             $active         = $user['active'];
+            $account_type   = $user['account_type'];
             $insta          = $user['insta_username'];
             $v_code         = $user['verification_code'];
             $firstname      = $user['first_name'];
@@ -94,11 +96,15 @@ if(isset($_POST['login']))
             $state          = $user['state'];
             $zip            = $user['zip'];
             $gender         = $user['gender'];
+            $age            = $user['age'];
+            $position       = $user['position'];
+            $business_type  = $user['business_type'];
+            $business_name  = $user['business_name'];
 
 
-            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "active":"'.$active.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" ,
+            $JSON_OUTPUT = '{ "status":"success", "id":"'.$id.'" , "active":"'.$active.'" , "account_type":"'.$account_type.'" , "insta_username":"'.$insta.'" , "verification_code":"'.$v_code.'" ,
             "first_name":"'.$firstname.'" , "last_name":"'.$lastname.'" ,  "street_address":"'.$streetaddress.'" ,  "city":"'.$city.'" ,
-            "state":"'.$state.'" , "zip":"'.$zip.'" , "gender":"'.$gender.'"}';
+            "state":"'.$state.'" , "zip":"'.$zip.'" , "gender":"'.$gender.'" , "age":"'.$age.'" , "position":"'.$position.'" , "business_type":"'.$business_type.'", "business_name":"'.$business_name.'"}';
 
             echo $JSON_OUTPUT;
             //echo "success";
@@ -111,15 +117,8 @@ if(isset($_POST['login']))
 //
 
 
-
-
-
-
-
-
-
-//update_account
-if(isset($_POST['update_account']))
+//update_account influencer
+if(isset($_POST['update_account_in']))
 {
     $id                    = isset($_POST['id'])                 ? $_POST['id']                  : '';
     $insta_username        = isset($_POST['insta_username'])     ? $_POST['insta_username']      : '';
@@ -131,18 +130,15 @@ if(isset($_POST['update_account']))
     $state                 = isset($_POST['state'])              ? $_POST['state']               : '';
     $zip                   = isset($_POST['zip'])                ? $_POST['zip']                 : '';
     $gender                = isset($_POST['gender'])             ? $_POST['gender']              : '';
-
     if ($insta_username == '' || $first_name == '' )
         {
           echo "error";
         }
-
         else
         {
           $mysqli->query("UPDATE cosyne_users SET id='$id',  insta_username='$insta_username', verification_code='$verification_code',
           first_name='$first_name', last_name='$last_name', street_address='$street_address', city='$city', state='$state', zip='$zip',
           gender='$gender'  WHERE id='$id'") or die($mysqli->error);
-
           $result = $mysqli->query("SELECT * FROM cosyne_users WHERE id='$id'");
           if ($result->num_rows == 0)
           {
@@ -154,6 +150,43 @@ if(isset($_POST['update_account']))
       }
 }
 
+//update_account business
+if(isset($_POST['update_account_bs']))
+{
+    $id                    = isset($_POST['id'])                 ? $_POST['id']                  : '';
+    $first_name            = isset($_POST['first_name'])         ? $_POST['first_name']          : '';
+    $last_name             = isset($_POST['last_name'])          ? $_POST['last_name']           : '';
+    $street_address        = isset($_POST['street_address'])     ? $_POST['street_address']      : '';
+    $city                  = isset($_POST['city'])               ? $_POST['city']                : '';
+    $state                 = isset($_POST['state'])              ? $_POST['state']               : '';
+    $zip                   = isset($_POST['zip'])                ? $_POST['zip']                 : '';
+    $position              = isset($_POST['position'])           ? $_POST['position']            : '';
+    $business_type         = isset($_POST['business_type'])      ? $_POST['business_type']       : '';
+    $business_name         = isset($_POST['business_name'])      ? $_POST['business_name']       : '';
+
+
+    if ($first_name == '' || $last_name == '' )
+        {
+          echo "error";
+        }
+
+        else
+        {
+          $mysqli->query("UPDATE cosyne_users SET id='$id',  insta_username='$insta_username', verification_code='$verification_code',
+          first_name='$first_name', last_name='$last_name', street_address='$street_address', city='$city', state='$state', zip='$zip',
+          gender='$gender', age='$age', position='$position', business_type='$business_type', business_name='$business_name'  WHERE id='$id'")
+          or die($mysqli->error);
+
+          $result = $mysqli->query("SELECT * FROM cosyne_users WHERE id='$id'");
+          if ($result->num_rows == 0)
+          {
+              echo "mismatch";
+          } else {
+            $JSON_OUTPUT = '{ "status":"success"}';
+            echo $JSON_OUTPUT;
+          }
+      }
+}
 
 
 
